@@ -12,13 +12,6 @@ func addItem(item string) {
 	items = append(items, item)
 	fmt.Println("Item added : ", item)
 
-	defer func() {
-		if len(items) > 0 {
-			fmt.Println("item removed : ", item)
-			items = items[:len(items)-1]
-		}
-	}()
-
 }
 
 func main() {
@@ -32,6 +25,19 @@ func main() {
 	addItem("item1")
 	addItem("item2")
 	addItem("item3")
+
+	defer func() {
+		for len(items) > 0 {
+			if len(items) > 0 {
+				items = items[:len(items)-1]
+			}
+			fmt.Println(items)
+
+			for i := 1; i <= 3; i++ {
+				defer fmt.Println(i)
+			}
+		}
+	}()
 
 	fmt.Println("Done inserting")
 

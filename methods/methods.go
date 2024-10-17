@@ -44,6 +44,18 @@ func (t Triangle) perimeter() float64 {
 	return t.side1 + t.side2 + t.side3
 }
 
+type Square struct {
+	side float64
+}
+
+func (s Square) area() float64 {
+	return s.side * s.side
+}
+
+func (s Square) perimeter() float64 {
+	return 4 * s.side
+}
+
 func main() {
 	var choice int
 	fmt.Println("Geometry Calculator")
@@ -51,7 +63,8 @@ func main() {
 	fmt.Println("1. Rectangle")
 	fmt.Println("2. Circle")
 	fmt.Println("3. Triangle")
-	fmt.Print("Enter your choice (1-3): ")
+	fmt.Println("4. Square")
+	fmt.Print("Enter your choice (1-4): ")
 	fmt.Scan(&choice)
 
 	switch choice {
@@ -89,5 +102,17 @@ func main() {
 		tr.area()
 		fmt.Println("Perimeter of the rectangle : ", tr.perimeter())
 
+	case 4:
+		var side float64
+		fmt.Println("Enter the side of the square : ")
+		fmt.Scan(&side)
+
+		sq := Square{side: side}
+		fmt.Println("Area of the Sqaure : ", sq.area())
+		fmt.Println("Perimeter of the Square : ", sq.perimeter())
+
+	default:
+		fmt.Println("Please enter a valid choice...")
 	}
+
 }
