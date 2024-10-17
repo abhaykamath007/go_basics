@@ -32,59 +32,75 @@ func (l List[T]) Display() {
 	}
 }
 
-func multiply[T comparable](a T, b T) {
-	fmt.Println(a, b)
-}
-
 func main() {
 
 	intList := List[int]{}
-
-	intList.Add(23)
-	intList.Add(34)
-	intList.Add(78)
-	intList.Add(790)
-	intList.Add(234)
-
-	fmt.Println("Displaying the elements : ")
-	fmt.Scanln()
-	intList.Display()
-
-	fmt.Println("\nRemoving elements :")
-	res := intList.Remove(34)
-	if res {
-		fmt.Println("Successfully removed the element")
-	} else {
-		fmt.Println("failed")
-	}
-	fmt.Scanln()
-
-	res = intList.Remove(482787)
-	if res {
-		fmt.Println("Successfully removed the element")
-	} else {
-		fmt.Println("failed")
-	}
-
-	fmt.Println("After removing .....")
-
-	intList.Display()
-
-	fmt.Scanln()
-
-	fmt.Println("......Strings.......")
-
 	stringList := List[string]{}
 
-	stringList.Add("Abhay")
-	stringList.Add("Ajit")
-	stringList.Add("Akshay")
+	var choice int
 
-	stringList.Display()
+	for {
+		fmt.Println("\nMenu:")
+		fmt.Println("1. Add Integer")
+		fmt.Println("2. Remove Integer")
+		fmt.Println("3. Display Integer List")
+		fmt.Println("4. Add String")
+		fmt.Println("5. Remove String")
+		fmt.Println("6. Display String List")
+		fmt.Println("7. Exit")
+		fmt.Print("Enter your choice: ")
+		fmt.Scan(&choice)
 
-	stringList.Remove("Ajit")
-	stringList.Display()
+		switch choice {
+		case 1:
+			var val int
+			fmt.Print("Enter an integer to add: ")
+			fmt.Scan(&val)
+			intList.Add(val)
+			fmt.Println("Added:", val)
 
-	multiply(13, 14)
+		case 2:
+			var val int
+			fmt.Print("Enter an integer to remove: ")
+			fmt.Scan(&val)
+			if intList.Remove(val) {
+				fmt.Println("Successfully removed:", val)
+			} else {
+				fmt.Println("Failed to remove:", val)
+			}
+
+		case 3:
+			fmt.Println("Displaying Integer List:")
+			intList.Display()
+
+		case 4:
+			var val string
+			fmt.Print("Enter a string to add: ")
+			fmt.Scan(&val)
+			stringList.Add(val)
+			fmt.Println("Added:", val)
+
+		case 5:
+			var val string
+			fmt.Print("Enter a string to remove: ")
+			fmt.Scan(&val)
+			if stringList.Remove(val) {
+				fmt.Println("Successfully removed:", val)
+			} else {
+				fmt.Println("Failed to remove:", val)
+			}
+
+		case 6:
+			fmt.Println("Displaying String List:")
+			stringList.Display()
+
+		case 7:
+			fmt.Println("Exiting...")
+			return
+
+		default:
+			fmt.Println("Invalid choice. Please try again.")
+		}
+	}
 
 }
