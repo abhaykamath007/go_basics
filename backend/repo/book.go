@@ -52,3 +52,27 @@ func InsertBook(newBook models.Book) (models.Book, error) {
 	database.DB.Raw("SELECT * FROM books WHERE id = LAST_INSERT_ID()").Scan(&createdBook)
 	return createdBook, nil
 }
+
+// BookExistsByID checks if a book exists by its ID.
+func BookExistsByID(id int) (bool, error) {
+	var count int64
+	sqlCheck := "SELECT COUNT(*) FROM books WHERE id = ?"
+	if err := database.DB.Raw(sqlCheck, id).Count(&count).Error; err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+// UpdateBook performs the actual update on the book record.
+func UpdateBook(updatedBook models.Book) (models.Book, error) {
+	sqlUpdate := `
+		UPDATE books
+		SET title = ?, author = ?, genre = ?, publication_year = ?, availability_status = ?
+		WHERE id = ?
+	`
+	if err := database.DB.Exec(sqlUpdate, updatedBook.Title, updatedBook.Author, updatedBook.Genre, updatedBook.PublicationYear, updatedBook.AvailabilityStatus, updatedBook.ID).Error; err != nil {
+		return models.Book{}, err
+	}
+
+	return updatedBook, nil
+}

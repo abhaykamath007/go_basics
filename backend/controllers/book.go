@@ -62,17 +62,6 @@ func CreateBook(c *gin.Context) {
 		return
 	}
 
-	// Check for existing book with the same title and author
-	exists, err := service.CheckBookExists(newBook.Title, newBook.Author)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error", "details": err.Error()})
-		return
-	}
-	if exists {
-		c.JSON(http.StatusConflict, gin.H{"error": "Book with the same title and author already exists"})
-		return
-	}
-
 	// Proceed to create the book
 	createdBook, err := service.CreateBook(newBook)
 	if err != nil {
@@ -81,4 +70,39 @@ func CreateBook(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, createdBook)
+}
+
+func UpdateBook(c *gin.Context) {
+	// Parse book ID from URL parameter
+	bookID := c.Param("id")
+	id, err := strconv.Atoi(bookID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid book ID"})
+		return
+	}
+
+	var updatedBook models.Book
+	// Bind JSON input to `updatedBook`
+	if err := c.ShouldBindJSON(&updatedBook); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input", "details": err.Error()})
+		return
+	}
+
+	// Set the parsed ID to `updatedBook`
+	updatedBook.ID = id
+
+	// Validate fields of `updatedBook`
+	if err := validators.ValidateBook(updatedBook); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Proceed to update the book
+	updatedBook, err = service.UpdateBook(updatedBook)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update book", "details": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Book updated successfully", "book": updatedBook})
 }

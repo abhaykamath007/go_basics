@@ -1,0 +1,12 @@
+# Ignore environment and config files
+backend/.env
+frontend/.env
+
+# Ignore other sensitive or unneeded files
+*.log
+*.tmp
+
+# Ignore dependency folders (if any)
+backend/node_modules/
+frontend/node_modules/
+

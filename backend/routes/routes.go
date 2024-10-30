@@ -16,6 +16,7 @@ func SetUpRoutes(r *gin.Engine) {
 		authorized.GET("/books", controllers.GetBooks)
 		authorized.GET("/books/:id", controllers.GetBookByID)
 		authorized.POST("/books/create", controllers.CreateBook)
+		authorized.PUT("/books/update/:id", controllers.UpdateBook)
 	}
 
 }
