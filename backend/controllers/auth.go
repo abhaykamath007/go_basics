@@ -3,12 +3,9 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/abhaykamath_007/library-management-system/backend/database"
 	"github.com/abhaykamath_007/library-management-system/backend/models"
 	"github.com/abhaykamath_007/library-management-system/backend/service"
-	"github.com/abhaykamath_007/library-management-system/backend/utils"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 func Register(c *gin.Context) {
@@ -34,37 +31,30 @@ func Register(c *gin.Context) {
 }
 
 func Login(c *gin.Context) {
-	var request models.User
-	var user models.User
+	var request models.LoginRequest // Using LoginRequest struct for binding
 
+	// Bind JSON input
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input", "details": err.Error()})
 		return
 	}
 
-	sql := "SELECT username, password FROM users WHERE username = ?"
-	err := database.DB.Raw(sql, request.Username).Scan(&user).Error
-
+	// Call the service to handle login
+	token, expTime, err := service.LoginUser(request.Username, request.Password) // Call to service layer
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if err.Error() == "user not found" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
 			return
 		}
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch user"})
+		if err.Error() == "invalid credentials" {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to login", "details": err.Error()})
 		return
 	}
 
-	if !utils.CheckPasswordHash(request.Password, user.Password) {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
-		return
-	}
-
-	token, expTime, err := utils.GenerateJWT(user)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
-		return
-	}
-
+	// Respond with the token
 	c.JSON(http.StatusOK, gin.H{
 		"token":          token,
 		"expirationTime": expTime,

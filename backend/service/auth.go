@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/abhaykamath_007/library-management-system/backend/models"
@@ -27,4 +28,22 @@ func RegisterUser(newUser models.User) error {
 
 	// Call the repository to save the user
 	return repo.CreateUser(newUser)
+}
+
+func LoginUser(username, password string) (string, int64, error) {
+	user, err := repo.FindUserByUsername(username)
+	if err != nil {
+		return "", 0, errors.New("user not found")
+	}
+
+	if !utils.CheckPasswordHash(password, user.Password) {
+		return "", 0, errors.New("invalid credentials")
+	}
+
+	token, expTime, err := utils.GenerateJWT(user)
+	if err != nil {
+		return "", 0, errors.New("failed to generate token")
+	}
+
+	return token, expTime, nil
 }

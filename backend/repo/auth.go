@@ -23,3 +23,10 @@ func CreateUser(newUser models.User) error {
 	sql := "INSERT INTO users (username, password, role) VALUES (?, ?, ?)"
 	return database.DB.Exec(sql, newUser.Username, newUser.Password, "Member").Error
 }
+
+func FindUserByUsername(username string) (models.User, error) {
+	var user models.User
+	sql := "SELECT id, username, password, role FROM users WHERE username = ?"
+	err := database.DB.Raw(sql, username).Scan(&user).Error
+	return user, err
+}
