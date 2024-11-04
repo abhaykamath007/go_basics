@@ -10,3 +10,8 @@ type Transaction struct {
 	DueDate      time.Time `json:"date"`
 	Returned     bool      `json:"returned"`
 }
+
+type BorrowRequest struct {
+	UserID int `json:"user_id"`
+	BookID int `json:"book_id"`
+}
