@@ -1,38 +1,59 @@
+import axios from 'axios';
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import "./Login.css"
 
 const Login = () => {
 
-    const [username,setUsername] = useState("");
-    const [password,setPassword] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
+        try {
+            const response = await axios.post("http://localhost:8080/login", { username, password });
 
+            const { token, expirationTime } = response.data;
+            localStorage.setItem("token", token);
+            localStorage.setItem("expirationTime", expirationTime);
+
+            navigate("/");
+        } catch (err) {
+            setError("Login failed. Please try again");
+        }
     }
 
     return (
-        <div>
-            <h2>Login</h2>
-            <form onSubmit={handleLogin}>
+        <div className="login-container">
+            <h2 className="login-title">Login</h2>
+            <form onSubmit={handleLogin} className="login-form">
                 <input
-                    type='text'
+                    type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="Username"
+                    className="login-input"
+                    required
                 />
                 <input
                     type="password"
                     value={password}
-                    onChange={(e)=> setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password"
+                    className="login-input"
+                    required
                 />
-                <button type="submit">Login</button>
-                <span>Don't you have an account?</span>
-                <Link to="/register">
-                    <button>Register</button>
-                </Link>
+                <button type="submit" className="login-button">Login</button>
+                {error && <span className="error-message">{error}</span>}
             </form>
+            <div className="register-link">
+                <span>Don't have an account?</span>
+                <Link to="/register">
+                    <button className="register-link-button">Register</button>
+                </Link>
+            </div>
         </div>
     )
 }
