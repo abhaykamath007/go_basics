@@ -8,6 +8,7 @@ type User struct {
 	Password  string    `json:"password"`
 	Role      string    `json:"role"`
 	CreatedAt time.Time `json:"created_at"`
+	Email     string    `json:"email" gorm:"unique;not null"`
 }
 
 type LoginRequest struct {

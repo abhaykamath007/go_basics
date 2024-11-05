@@ -53,7 +53,6 @@ func InsertBook(newBook models.Book) (models.Book, error) {
 	return createdBook, nil
 }
 
-// BookExistsByID checks if a book exists by its ID.
 func BookExistsByID(id int) (bool, error) {
 	var count int64
 	sqlCheck := "SELECT COUNT(*) FROM books WHERE id = ?"
@@ -63,7 +62,6 @@ func BookExistsByID(id int) (bool, error) {
 	return count > 0, nil
 }
 
-// UpdateBook performs the actual update on the book record.
 func UpdateBook(updatedBook models.Book) (models.Book, error) {
 	sqlUpdate := `
 		UPDATE books
