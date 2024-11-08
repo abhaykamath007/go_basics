@@ -28,11 +28,12 @@ const FeaturedBooks = () => {
       <div className='book-grid'>
         {books.length > 0 ? (
             books.map(book => (
-                <div className='book-item' key={book.id}>
+                <div className='book-item' key={book?.id}>
                     <img src={'http://i2.wp.com/geekdad.com/wp-content/uploads/2013/02/HP1-Kibuishi.jpg'} alt={book?.title} className='book-image'/>
-                    <h3 className='book-title'>{book.title}</h3>
-                    <p className='book-author'>{book.author}</p>
-                    <button className='book-button'>Borrow</button>
+                    <h3 className='book-title'>{book?.title.length > 27 ? `${book.title.substring(0,27)}...` :  book?.title}
+                    </h3>
+                    <p className='book-author'>{book?.author.length > 27 ? `${book.author.substring(0,27)}...` : book?.author}</p>
+                    {/* <button className='book-button'>Borrow</button> */}
                 </div>
             ))
         ) : (

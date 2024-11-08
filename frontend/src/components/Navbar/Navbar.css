@@ -37,6 +37,12 @@
     align-items: center;
 }
 
+span {
+    margin-right: 10px;
+    color: palevioletred;
+    /* font-weight: bold; */
+}
+
 .navbar-button {
     color: #fff;
     background-color: #007bff;

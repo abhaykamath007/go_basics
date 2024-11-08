@@ -1,10 +1,11 @@
-import axios from 'axios';
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import "./Login.css"
+import  { useAuth } from '../../context/AuthContext';
 
 const Login = () => {
 
+    const {login,loading} = useAuth();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
@@ -13,12 +14,7 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:8080/login", { username, password });
-
-            const { token, expirationTime } = response.data;
-            localStorage.setItem("token", token);
-            localStorage.setItem("expirationTime", expirationTime);
-
+            await login(username,password);
             navigate("/");
         } catch (err) {
             setError("Login failed. Please try again");
