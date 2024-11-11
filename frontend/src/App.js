@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Login from "./pages/Login/Login";
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Register from "./pages/Register/Register";
@@ -8,25 +8,36 @@ import BooksPage from "./pages/BooksPage/BooksPage";
 import AccountPage from "./pages/AccountPage/AccountPage";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 import { useAuth } from "./context/AuthContext";
+import BookDetailsPage from "./pages/BookDetailsPage/BookDetailsPage";
+import ProtectedLayout from "./components/Layout/ProtectedLayout";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 
-  const {isAuthenticated} = useAuth();
+  const { isAuthenticated } = useAuth();
+
+
 
   return (
+    <>   
+     <ToastContainer position="top-center" autoClose={3000} />
       <Routes>
-          <Route element={<AppLayout/>}>
-            <Route path="/"  element={isAuthenticated ? <HomePage/> : <Navigate to='/login'/>} />
-            <Route path="/books" element={isAuthenticated ? <BooksPage/> : <Navigate to='/login'/>}/>
-            <Route path="/account" element={isAuthenticated ? <AccountPage/> : <Navigate to='/login'/>}/>
+        <Route element={<AppLayout />}>
+          <Route element={<ProtectedLayout isAuthenticated={isAuthenticated} />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/books" element={<BooksPage />} />
+            {console.log(isAuthenticated)};
+            <Route path="/account" element={<AccountPage />} />
+            <Route path="/books/:id" element={<BookDetailsPage />} />
           </Route>
-
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="*" element={<NotFoundPage/>} />
-
-          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+        <Route path="/login" element={isAuthenticated ? <Navigate to="/" replace /> : <Login />} />
+        <Route path="/register" element={isAuthenticated ? <Navigate to="/" replace /> : <Register />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
+    </>
+
   );
 }
 

@@ -1,10 +1,14 @@
 import "./FeaturedBooks.css"
 import React, { useEffect, useState } from 'react'
 import axiosInstance from '../../utils/axiosInstance';
+import PosterFallbacks from '../../assets/no-poster.png'
+import { useNavigate } from "react-router-dom";
 
 const FeaturedBooks = () => {
 
     const [books,setBooks] = useState([]);
+    const navigate = useNavigate();
+
 
     useEffect(()=> {
 
@@ -22,14 +26,18 @@ const FeaturedBooks = () => {
 
     },[])
 
+    const handleBookClick = (id) => {
+        navigate(`/books/${id}`);
+    }
+
   return (
     <div className='book-list'>
       <h2>Featured Books</h2>
       <div className='book-grid'>
         {books.length > 0 ? (
             books.map(book => (
-                <div className='book-item' key={book?.id}>
-                    <img src={'http://i2.wp.com/geekdad.com/wp-content/uploads/2013/02/HP1-Kibuishi.jpg'} alt={book?.title} className='book-image'/>
+                <div className='book-item' key={book?.id} onClick={()=>handleBookClick(book.id)}>
+                    <img src={PosterFallbacks} alt={book?.title} className='book-image'/>
                     <h3 className='book-title'>{book?.title.length > 27 ? `${book.title.substring(0,27)}...` :  book?.title}
                     </h3>
                     <p className='book-author'>{book?.author.length > 27 ? `${book.author.substring(0,27)}...` : book?.author}</p>
