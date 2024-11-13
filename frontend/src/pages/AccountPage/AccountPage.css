@@ -1,6 +1,6 @@
 .account-page{
     display: flex;
-    
+    background-color: #202938;
 }
 
 .sidebar {
@@ -31,4 +31,11 @@
 
 .account-content {
     padding: 20px;
+    /* min-height: 400px; */
+}
+
+.loading{
+    min-height: 500px;
+    color: white;
+    font-size: 20px;
 }

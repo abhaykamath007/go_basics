@@ -55,7 +55,7 @@ const AccountPage = () => {
       </aside>
       <main className='account-content'>
         {loading ? (
-          <p>Loading....</p>
+          <p className='loading'>Loading....</p>
         ) : activeSection === "borrowed" ? (
           <BorrowedBooks books={borrowedBooks} />
         ) : (

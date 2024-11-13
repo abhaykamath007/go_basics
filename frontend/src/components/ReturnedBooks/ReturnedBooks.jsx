@@ -1,12 +1,12 @@
 import React from 'react'
-import "./ReturnedBooks.css"
+import "../BorrowedBooks/BorrowedBooks.css"
 
 const ReturnedBooks = ({books}) => {
   return (
-    <div className="returned-books">
-      <h2>Borrowed Books</h2>
+    <div className="borrowed-books">
+      <h2>Returned Books</h2>
       {books && books.length > 0 ? (
-        <table className="returned-books-table">
+        <table className="borrowed-books-table">
           <thead>
             <tr>
               <th>Title</th>
@@ -16,8 +16,8 @@ const ReturnedBooks = ({books}) => {
             </tr>
           </thead>
           <tbody>
-            {books.map((book, index) => (
-              <tr key={book.id || index}>
+            {books.map((book) => (
+              <tr key={book.id}>
                 <td>{book.title}</td>
                 <td>{book.author}</td>
                 <td>{new Date(book.borrowed_date).toLocaleDateString()}</td>

@@ -15,10 +15,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 
-  const { isAuthenticated } = useAuth();
-
-
-
+   const { isAuthenticated } = useAuth();
+  
   return (
     <>   
      <ToastContainer position="top-center" autoClose={3000} />
