@@ -13,28 +13,33 @@ const AccountPage = () => {
   const userID = localStorage.getItem("userID")
   console.log(userID);
 
-  useEffect(() => {
-    const fetchBooks = async (section) => {
-      setLoading(true);
-      try {
-        const endpoint = section === "borrowed" ? `users/books/${userID}/borrowed` : `users/books/${userID}/returned`;
-        const response = await axiosInstance.get(endpoint);
+  const fetchBooks = async (section) => {
+    setLoading(true);
+    try {
+      const endpoint = section === "borrowed" ? `users/books/${userID}/borrowed` : `users/books/${userID}/returned`;
+      const response = await axiosInstance.get(endpoint);
 
-        if (section === "borrowed") {
-          setBorrowedBooks(response.data);
-          console.log(borrowedBooks);
-        } else {
-          setReturnedBooks(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching books:", error);
-      } finally {
-        setLoading(false);
+      if (section === "borrowed") {
+        setBorrowedBooks(response.data);
+        console.log(borrowedBooks);
+      } else {
+        setReturnedBooks(response.data);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching books:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    
     fetchBooks(activeSection);
   }, [activeSection])
+  
+  const refreshBooks = () => {
+    fetchBooks("borrowed");
+  };
 
 
   return (
@@ -57,7 +62,7 @@ const AccountPage = () => {
         {loading ? (
           <p className='loading'>Loading....</p>
         ) : activeSection === "borrowed" ? (
-          <BorrowedBooks books={borrowedBooks} />
+          <BorrowedBooks books={borrowedBooks} onReturn={refreshBooks} />
         ) : (
           <ReturnedBooks books={returnedBooks} />
         )}

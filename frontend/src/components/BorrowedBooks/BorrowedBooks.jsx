@@ -5,7 +5,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 
-const BorrowedBooks = ({ books }) => {
+const BorrowedBooks = ({ books , onReturn}) => {
 
   const { userID } = useAuth();
   const handleReturnBook = async (bookId) => {
@@ -13,8 +13,9 @@ const BorrowedBooks = ({ books }) => {
       const response = await axiosInstance.post(`/books/${bookId}/return`,{
         user_id:userID,
     });
-      if (response.status == 200) {
+      if (response.status === 200) {
         toast.success("Book returned successfully!");
+        onReturn();
       } 
     } catch (error) {
       toast.error("Failed to return book. Please try again");
