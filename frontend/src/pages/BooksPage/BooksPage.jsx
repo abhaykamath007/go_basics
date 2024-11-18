@@ -86,7 +86,7 @@ const BooksPage = () => {
           <select id='status' value={selectedStatus} onChange={handleStatusChange}>
             <option value="">All Books</option>
             <option value="available">Available</option>
-            <option value="checked_out">Checked_out</option>
+            <option value="checked_out">Checked Out</option>
           </select>
           </div>
         </div>
@@ -97,7 +97,7 @@ const BooksPage = () => {
             <BookItem key={book.id} book={book} />
           ))
         ) : (
-          <p>No books found... </p>
+          <p className='book-not-found'>No books found... </p>
         )}
       </div>
       {filteredBooks.length > 0 &&
