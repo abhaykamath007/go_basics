@@ -12,7 +12,20 @@ import (
 
 func GetBooks(c *gin.Context) {
 
-	books, err := service.GetBooks()
+	pageStr := c.DefaultQuery("page", "1")
+	genre := c.DefaultQuery("genre", "")
+	status := c.DefaultQuery("status", "")
+
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page < 1 {
+		page = 1
+	}
+
+	limit := 5
+
+	offset := (page - 1) * int(limit)
+
+	books, totalCount, err := service.GetBooks(genre, status, offset, int(limit))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch books", "details": err.Error()})
 		return
@@ -20,9 +33,18 @@ func GetBooks(c *gin.Context) {
 
 	if len(books) == 0 {
 		c.JSON(http.StatusOK, gin.H{"message": "No books found"})
-	} else {
-		c.JSON(http.StatusOK, books)
+		return
 	}
+
+	totalPages := (int(totalCount) + limit - 1) / limit
+
+	c.JSON(http.StatusOK, gin.H{
+		"books":       books,
+		"totalBooks":  totalCount,
+		"totalPages":  totalPages,
+		"currentPage": page,
+	})
+
 }
 
 func GetBookByID(c *gin.Context) {
@@ -105,4 +127,17 @@ func UpdateBook(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Book updated successfully", "book": updatedBook})
+}
+
+func GetGenres(c *gin.Context) {
+	genres, err := service.GetGenres()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch genres"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"genres": genres,
+	})
 }

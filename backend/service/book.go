@@ -11,8 +11,12 @@ func GetBookByID(bookID int) (*models.Book, error) {
 	return repo.FetchBookByID(bookID)
 }
 
-func GetBooks() ([]models.Book, error) {
-	return repo.FetchBooks()
+func GetBooks(genre, status string, offset, limit int) ([]models.Book, int64, error) {
+	return repo.FetchBooks(genre, status, offset, limit)
+}
+
+func GetGenres() ([]string, error) {
+	return repo.GetGenres()
 }
 
 // CreateBook inserts a new book into the database.

@@ -68,7 +68,7 @@ const FeaturedBooks = () => {
         const fetchFeaturedBooks = async () => {
             try {
                 const response = await axiosInstance.get('/books');
-                const limitedBooks = response.data.slice(0, 5);
+                const limitedBooks = response.data.books.slice(0, 5);
                 setBooks(limitedBooks);
             } catch (err) {
                 console.error("Error fetching books:", err);

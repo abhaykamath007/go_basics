@@ -66,6 +66,10 @@ export const AuthProvider = ({children}) => {
     )
 }
 
-export const useAuth = () => useContext(AuthContext)
+export const useAuth = () => {
+    const temp = useContext(AuthContext);
+    console.log('temp:', temp)
+    return temp
+}
 
 

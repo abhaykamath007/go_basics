@@ -1,6 +1,8 @@
 package repo
 
 import (
+	"log"
+
 	"github.com/abhaykamath_007/library-management-system/backend/database"
 	"github.com/abhaykamath_007/library-management-system/backend/models"
 )
@@ -20,15 +22,44 @@ func FetchBookByID(bookID int) (*models.Book, error) {
 	return &book, nil
 }
 
-func FetchBooks() ([]models.Book, error) {
+func FetchBooks(genre, status string, offset, limit int) ([]models.Book, int64, error) {
 	var books []models.Book
-	sql := "SELECT * FROM books"
+	var totalCount int64
 
-	if err := database.DB.Raw(sql).Scan(&books).Error; err != nil {
-		return nil, err
+	query := database.DB.Table("books")
+
+	if genre != "" {
+		query = query.Where("genre=?", genre)
+	}
+	if status != "" {
+		query = query.Where("availability_status=?", status)
 	}
 
-	return books, nil
+	query = query.Offset(offset).Limit(limit)
+
+	if err := query.Find(&books).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if err := database.DB.Table("books").Where(query).Count(&totalCount).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return books, totalCount, nil
+}
+
+func GetGenres() ([]string, error) {
+	var genres []string
+
+	sql := "SELECT DISTINCT genre FROM books"
+
+	err := database.DB.Raw(sql).Scan(&genres).Error
+
+	if err != nil {
+		log.Println("Error fetching genres : ", err)
+		return nil, err
+	}
+	return genres, nil
 }
 
 func BookExists(title, author string) (bool, error) {

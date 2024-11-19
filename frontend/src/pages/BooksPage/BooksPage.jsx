@@ -5,53 +5,56 @@ import "./BooksPage.css"
 
 const BooksPage = () => {
   const [books, setBooks] = useState([]);
-  const genres = ["Fantasy", "Fiction", "Romance", "Adventure"]
-  const [selectedGenre, setSelectedGenre] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('');
-  const [filteredBooks, setFilteredBooks] = useState([]);
+  const [genres, setGenres] = useState([]);
+  const [selectedGenre, setSelectedGenre] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const booksPerPage = 10;
-  const indexOfLastBook = currentPage * booksPerPage;
-  const indexOfFirstBook = indexOfLastBook - booksPerPage;
-  const currentBooks = filteredBooks.slice(indexOfFirstBook, indexOfLastBook);
-  const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
+  const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(()=> {
+    const fetchGenres = async () => {
+      try {
+        const response = await axiosInstance.get("/genres");
+        setGenres(response.data.genres);
+      } catch(err) {
+        console.error("Error fetching genres : ",err);
+      }
+    };
+    fetchGenres();
+  },[]);
+
 
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axiosInstance.get('/books');
-        setBooks(response.data);
-        setFilteredBooks(response.data);
+        const response = await axiosInstance.get(`/books`,{
+          params: {
+            page: currentPage,
+            genre: selectedGenre || undefined,
+            status: selectedStatus || undefined,
+          },
+        });
+        const booksData = response.data.books || []; 
+        setBooks(booksData);
+        setTotalPages(response.data.totalPages || 1);
       } catch (err) {
         console.error("Error fetching books:", err);
+        setBooks([]);
+        setTotalPages(1);
       }
     };
     fetchBooks();
-  }, [])
-
-  useEffect(() => {
-    let updatedBooks = books;
-
-    if (selectedGenre) {
-      updatedBooks = updatedBooks.filter((book) => book.genre === selectedGenre);
-    }
-
-    if (selectedStatus) {
-      updatedBooks = updatedBooks.filter((book) => book.availability_status === selectedStatus);
-    }
-
-    setFilteredBooks(updatedBooks);
-    setCurrentPage(1);
-  }, [selectedGenre, selectedStatus, books]);
-
+  }, [currentPage,selectedGenre,selectedStatus]);
 
   const handleGenreChange = (event) => {
     setSelectedGenre(event.target.value);
+    setCurrentPage(1);
   }
 
   const handleStatusChange = (event) => {
     setSelectedStatus(event.target.value);
+    setCurrentPage(1);
   }
 
 
@@ -92,15 +95,15 @@ const BooksPage = () => {
         </div>
       </div>
       <div className='books-grid'>
-        {currentBooks.length > 0 ? (
-          currentBooks.map((book) => (
+        {books.length > 0 ? (
+          books.map((book) => (
             <BookItem key={book.id} book={book} />
           ))
         ) : (
           <p className='book-not-found'>No books found... </p>
         )}
       </div>
-      {filteredBooks.length > 0 &&
+      {books.length > 0 &&
         <div className='pagination'>
           <button onClick={goToPreviousPage} disabled={currentPage === 1}>
             Previous

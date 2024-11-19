@@ -1,0 +1,10 @@
+pagniagtion -> clinet to server [pageNo, pagesize, isFirst, isLast]
+
+{
+    books:[{}],
+    pagination: {
+
+    }
+}
+
+filter support - search, genre
