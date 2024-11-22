@@ -22,7 +22,7 @@ func FetchBookByID(bookID int) (*models.Book, error) {
 	return &book, nil
 }
 
-func FetchBooks(genre, status string, offset, limit int) ([]models.Book, int64, error) {
+func FetchBooks(genre, status, search string, offset, limit int) ([]models.Book, int64, error) {
 	var books []models.Book
 	var totalCount int64
 
@@ -33,6 +33,13 @@ func FetchBooks(genre, status string, offset, limit int) ([]models.Book, int64, 
 	}
 	if status != "" {
 		query = query.Where("availability_status=?", status)
+	}
+	if search != "" {
+		searchQuery := "%" + search + "%"
+		query = query.Where(
+			"title LIKE ? OR author LIKE ? OR CAST(publication_year AS CHAR) LIKE ?",
+			searchQuery, searchQuery, searchQuery,
+		)
 	}
 
 	query = query.Offset(offset).Limit(limit)

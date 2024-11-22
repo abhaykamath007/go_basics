@@ -11,8 +11,8 @@ func GetBookByID(bookID int) (*models.Book, error) {
 	return repo.FetchBookByID(bookID)
 }
 
-func GetBooks(genre, status string, offset, limit int) ([]models.Book, int64, error) {
-	return repo.FetchBooks(genre, status, offset, limit)
+func GetBooks(genre, status, search string, offset, limit int) ([]models.Book, int64, error) {
+	return repo.FetchBooks(genre, status, search, offset, limit)
 }
 
 func GetGenres() ([]string, error) {

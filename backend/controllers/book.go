@@ -15,6 +15,7 @@ func GetBooks(c *gin.Context) {
 	pageStr := c.DefaultQuery("page", "1")
 	genre := c.DefaultQuery("genre", "")
 	status := c.DefaultQuery("status", "")
+	search := c.DefaultQuery("query", "")
 
 	page, err := strconv.Atoi(pageStr)
 	if err != nil || page < 1 {
@@ -25,7 +26,7 @@ func GetBooks(c *gin.Context) {
 
 	offset := (page - 1) * int(limit)
 
-	books, totalCount, err := service.GetBooks(genre, status, offset, int(limit))
+	books, totalCount, err := service.GetBooks(genre, status, search, offset, int(limit))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch books", "details": err.Error()})
 		return

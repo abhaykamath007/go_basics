@@ -9,33 +9,36 @@ const BooksPage = () => {
   const [selectedGenre, setSelectedGenre] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
 
+  const [searchQuery, setSearchQurey] = useState("");
+  const [submittedSearch,setSubmittedSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  useEffect(()=> {
+  useEffect(() => {
     const fetchGenres = async () => {
       try {
         const response = await axiosInstance.get("/genres");
         setGenres(response.data.genres);
-      } catch(err) {
-        console.error("Error fetching genres : ",err);
+      } catch (err) {
+        console.error("Error fetching genres : ", err);
       }
     };
     fetchGenres();
-  },[]);
+  }, []);
 
 
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axiosInstance.get(`/books`,{
+        const response = await axiosInstance.get(`/books`, {
           params: {
             page: currentPage,
             genre: selectedGenre || undefined,
             status: selectedStatus || undefined,
+            query: searchQuery || undefined,
           },
         });
-        const booksData = response.data.books || []; 
+        const booksData = response.data.books || [];
         setBooks(booksData);
         setTotalPages(response.data.totalPages || 1);
       } catch (err) {
@@ -45,7 +48,7 @@ const BooksPage = () => {
       }
     };
     fetchBooks();
-  }, [currentPage,selectedGenre,selectedStatus]);
+  }, [currentPage, selectedGenre, selectedStatus, submittedSearch]);
 
   const handleGenreChange = (event) => {
     setSelectedGenre(event.target.value);
@@ -57,6 +60,15 @@ const BooksPage = () => {
     setCurrentPage(1);
   }
 
+  const handleSearchChange = (event) => {
+    setSearchQurey(event.target.value);
+  }
+  
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    setSubmittedSearch(searchQuery);
+    setCurrentPage(1);
+  }
 
   const goToNextPage = () => {
     if (currentPage < totalPages)
@@ -72,25 +84,35 @@ const BooksPage = () => {
     <div className='books-page'>
       <div className='books-page-heading'>
         <h1>Library Books</h1>
+        <form className='search-form' onSubmit={handleSearchSubmit}>
+          <input
+            className='search-box'
+            type='text'
+            placeholder='Search by title, author or year...'
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+          <button className='search-btn' type='submit'>Search</button>
+        </form>
         <div className='filter-section'>
           <div className='genre-dropdown'>
-          <label htmlFor='genre'>Filter by Genre:</label>
-          <select id="genre" value={selectedGenre} onChange={handleGenreChange}>
-            <option value="">All Genres</option>
-            {
-              genres.map((genre) => (
-                <option key={genre} value={genre}>{genre}</option>
-              ))
-            }
-          </select>
+            <label htmlFor='genre'>Filter by Genre:</label>
+            <select id="genre" value={selectedGenre} onChange={handleGenreChange}>
+              <option value="">All Genres</option>
+              {
+                genres.map((genre) => (
+                  <option key={genre} value={genre}>{genre}</option>
+                ))
+              }
+            </select>
           </div>
           <div className='status-dropdown'>
-          <label htmlFor='status'>Book status:</label>
-          <select id='status' value={selectedStatus} onChange={handleStatusChange}>
-            <option value="">All Books</option>
-            <option value="available">Available</option>
-            <option value="checked_out">Checked Out</option>
-          </select>
+            <label htmlFor='status'>Book status:</label>
+            <select id='status' value={selectedStatus} onChange={handleStatusChange}>
+              <option value="">All Books</option>
+              <option value="available">Available</option>
+              <option value="checked_out">Checked Out</option>
+            </select>
           </div>
         </div>
       </div>

@@ -77,3 +77,29 @@
 .pagination button:hover:not(:disabled){
     background-color: #0056b3;
 }
+
+.search-form{
+    padding: 20px;
+}
+
+.search-box{
+    width: 250px;
+    height: 40px;
+    border-radius: 25px 0px 0px 25px;
+    padding: 0px 15px;
+    outline: none;
+    border: none;
+}
+
+.search-btn{
+    height: 40px;
+    width: 70px;
+    border-radius: 0px 25px 25px 0px;
+    color:white;
+    background-color: #007bff;
+    border: none;
+}
+
+.search-btn:hover{
+    background-color: #0056b3;
+}
