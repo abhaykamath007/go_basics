@@ -15,8 +15,6 @@ func SetUpRoutes(r *gin.Engine) {
 	{
 		authorized.GET("/books", controllers.GetBooks)
 		authorized.GET("/books/:id", controllers.GetBookByID)
-		authorized.POST("/books/create", controllers.CreateBook)
-		authorized.PUT("/books/update/:id", controllers.UpdateBook)
 		authorized.POST("/books/:book_id/borrow", controllers.BorrowBook)
 		authorized.POST("/books/:book_id/return", controllers.ReturnBook)
 
@@ -25,6 +23,12 @@ func SetUpRoutes(r *gin.Engine) {
 		authorized.GET("users/books/:user_id/borrowed", controllers.GetBorrowedBooks)
 		authorized.GET("users/books/:user_id/returned", controllers.GetReturnedBooks)
 
+	}
+
+	admin := r.Group("/admin").Use(middleware.AdminOnlyMiddleware())
+	{
+		admin.POST("/books/create", controllers.CreateBook)
+		admin.PUT("books/update/:id", controllers.UpdateBook)
 	}
 
 }

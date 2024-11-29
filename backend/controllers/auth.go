@@ -40,7 +40,7 @@ func Login(c *gin.Context) {
 	}
 
 	// Call the service to handle login
-	token, expTime, userID, err := service.LoginUser(request.Username, request.Password) // Call to service layer
+	token, expTime, userID, role, err := service.LoginUser(request.Username, request.Password) // Call to service layer
 	if err != nil {
 		if err.Error() == "user not found" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
@@ -59,5 +59,6 @@ func Login(c *gin.Context) {
 		"token":          token,
 		"expirationTime": expTime,
 		"UserID":         userID,
+		"Role":           role,
 	})
 }

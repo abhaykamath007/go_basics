@@ -30,20 +30,20 @@ func RegisterUser(newUser models.User) error {
 	return repo.CreateUser(newUser)
 }
 
-func LoginUser(username, password string) (string, int64, int, error) {
+func LoginUser(username, password string) (string, int64, int, string, error) {
 	user, err := repo.FindUserByUsername(username)
 	if err != nil {
-		return "", 0, 0, errors.New("user not found")
+		return "", 0, 0, "", errors.New("user not found")
 	}
 
 	if !utils.CheckPasswordHash(password, user.Password) {
-		return "", 0, 0, errors.New("invalid credentials")
+		return "", 0, 0, "", errors.New("invalid credentials")
 	}
 
 	token, expTime, err := utils.GenerateJWT(user)
 	if err != nil {
-		return "", 0, 0, errors.New("failed to generate token")
+		return "", 0, 0, "", errors.New("failed to generate token")
 	}
 
-	return token, expTime, user.ID, nil
+	return token, expTime, user.ID, user.Role, nil
 }

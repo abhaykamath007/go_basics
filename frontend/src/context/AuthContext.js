@@ -28,17 +28,25 @@ export const AuthProvider = ({children}) => {
         try {
             const response = await axios.post("http://localhost:8080/login",{username,password})
 
-            const {token,expirationTime,UserID} = response.data;
+            const {token,expirationTime,UserID,Role} = response.data;
+            console.log(response.data)
             console.log(UserID);
             localStorage.setItem("token",token);
             localStorage.setItem("expirationTime",expirationTime);
             localStorage.setItem("username",username);
             localStorage.setItem("isAuthenticated", "true");
             localStorage.setItem("userID",UserID);
+            localStorage.setItem("Role",Role);
+
             setUsername(username);
             setUserID(UserID);
             setIsAuthenticated(true);
-            navigate("/");
+
+            if(Role === "admin"){
+                navigate("/admin")
+            } else {
+                navigate("/");
+            }
 
         } catch(err) {
             throw new Error("Login failed. Please try again");
@@ -53,6 +61,7 @@ export const AuthProvider = ({children}) => {
         localStorage.removeItem("isAuthenticated");
         localStorage.removeItem("username");
         localStorage.removeItem("userID");
+        localStorage.removeItem("role");
         setUsername(null);
         setIsAuthenticated(false);
         navigate("/login");
