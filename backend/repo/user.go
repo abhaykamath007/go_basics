@@ -41,3 +41,70 @@ func FetchReturnedBooks(userID int) ([]models.BorrowedBook, error) {
 	}
 	return books, nil
 }
+
+func CountUsers() (int64, error) {
+	var count int64
+
+	sql := `SELECT count(*) FROM users WHERE role != 'admin' `
+	if err := database.DB.Raw(sql).Scan(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+func CountBooks() (int64, error) {
+	var count int64
+
+	sql := `SELECT count(*) FROM books`
+	if err := database.DB.Raw(sql).Scan(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+func CountAvailableBooks() (int64, error) {
+	var count int64
+
+	sql := `SELECT count(*) FROM books where availability_status='available'`
+	if err := database.DB.Raw(sql).Scan(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+func CountBorrowedBooks() (int64, error) {
+	var count int64
+
+	sql := `SELECT count(*) FROM books where availability_status != 'available'`
+	if err := database.DB.Raw(sql).Scan(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+func CountBooksBorrowedThisMonth() (int64, error) {
+	var count int64
+
+	sql := `SELECT COUNT(*) FROM 
+	transactions WHERE MONTH(borrowed_date) = MONTH(CURRENT_DATE())
+	AND YEAR(borrowed_date) = YEAR(CURRENT_DATE())`
+
+	err := database.DB.Raw(sql).Scan(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+func CountBooksAddedThisMonth() (int64, error) {
+	var count int64
+
+	sql := `SELECT COUNT(*) FROM books WHERE MONTH(created_at) = MONTH(CURRENT_DATE())
+	AND YEAR(created_at) = YEAR(CURRENT_DATE())`
+
+	err := database.DB.Raw(sql).Scan(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}

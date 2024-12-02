@@ -29,6 +29,7 @@ func SetUpRoutes(r *gin.Engine) {
 	{
 		admin.POST("/books/create", controllers.CreateBook)
 		admin.PUT("books/update/:id", controllers.UpdateBook)
+		admin.GET("/stats", controllers.GetStats)
 	}
 
 }
