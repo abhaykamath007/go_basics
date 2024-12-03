@@ -9,6 +9,7 @@ export const AuthProvider = ({children}) => {
     const [loading,setLoading] = useState(false);
     const [username,setUsername] = useState(null);
     const [userID,setUserID] = useState(null);
+    const [role,setRole] = useState(null);
     const navigate = useNavigate();
 
 
@@ -40,6 +41,7 @@ export const AuthProvider = ({children}) => {
 
             setUsername(username);
             setUserID(UserID);
+            setRole(Role);
             setIsAuthenticated(true);
 
             if(Role === "admin"){
@@ -68,7 +70,7 @@ export const AuthProvider = ({children}) => {
     }
 
     return (
-        <AuthContext.Provider value={{isAuthenticated,login,logout,loading,username,userID}}>
+        <AuthContext.Provider value={{isAuthenticated,login,logout,loading,username,userID,role}}>
         {children}
         </AuthContext.Provider>
         

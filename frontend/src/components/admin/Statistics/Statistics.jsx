@@ -18,7 +18,7 @@ const Statistics = () => {
             console.log(response.data);
             setStats({
                 totalUsers: response.data.total_users,
-                totalBooks: response.data.borrowed_books,
+                totalBooks: response.data.total_books,
                 availableBooks: response.data.available_books,
                 borrowedBooks: response.data.borrowed_books,
                 booksAddedThisMonth: response.data.books_added_this_month,

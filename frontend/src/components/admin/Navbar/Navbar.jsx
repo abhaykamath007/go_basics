@@ -15,8 +15,8 @@ const Navbar = () => {
       </div>
       <ul className='navbar-links'>
         <li><Link to='/admin'>Home</Link></li>
-        <li><Link to='/admin/create-book'>Manage Books</Link></li>
-        <li><Link to='/admin/update-book'>Manage Users</Link></li>
+        <li><Link to='/admin/manage-books'>Manage Books</Link></li>
+        <li><Link to='/admin/manage-users'>Manage Users</Link></li>
       </ul>
       <div className='navbar-auth'>
         <span>{username}</span>

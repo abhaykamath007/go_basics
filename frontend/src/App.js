@@ -13,19 +13,21 @@ import ProtectedLayout from "./components/Layout/ProtectedLayout";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import AdminDashboard from "./pages/admin/AdminDashboard/AdminDashboard";
-import CreateBook from "./pages/admin/CreateBook/CreateBook";
-import UpdateBook from "./pages/admin/UpdateBook/UpdateBook";
 import AdminLayout from "./components/Layout/AdminLayout";
 import AdminWrapper from "./components/Layout/AdminWrapper";
+import ManageBooks from "./pages/admin/ManageBooks/ManageBooks";
+import ManageUsers from "./pages/admin/ManageUsers/ManageUsers";
 
 function App() {
 
   const { isAuthenticated } = useAuth();
+  const role = localStorage.getItem("Role");
 
   return (
     <>
       <ToastContainer position="top-center" autoClose={3000} />
       <Routes>
+
         <Route element={<AppLayout />}>
           <Route element={<ProtectedLayout isAuthenticated={isAuthenticated} />}>
             <Route path="/" element={<HomePage />} />
@@ -36,16 +38,30 @@ function App() {
           </Route>
         </Route>
 
+
         <Route element={<AdminWrapper />}>
           <Route element={<AdminLayout />}>
             <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/create-book" element={<CreateBook />} />
-            <Route path="/admin/update-book" element={<UpdateBook />} />
+            <Route path="/admin/manage-books" element={<ManageBooks />} />
+            <Route path="/admin/manage-users" element={<ManageUsers />} />
           </Route>
         </Route>
 
-        <Route path="/login" element={isAuthenticated ? <Navigate to="/" replace /> : <Login />} />
-        <Route path="/register" element={isAuthenticated ? <Navigate to="/" replace /> : <Register />} />
+
+        <Route path="/login" element={
+          isAuthenticated
+            ? role === "admin"
+              ? <Navigate to="/admin" replace />
+              : <Navigate to="/" replace />
+            : <Login />
+        } />
+
+        <Route path="/register" element={
+          isAuthenticated ? role === "admin"
+            ? <Navigate to="/admin" replace />
+            : <Navigate to="/" replace />
+            : <Register />
+        } />
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
